@@ -1,26 +1,52 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Component } from 'react'
+import Screen from './component/Screen'
+import Button from './component/Button'
+import { connect } from 'react-redux'
+import { addCounter, subtractCounter, resetCounter } from './actions/action'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {  
+
+  handleButtonClick = (props) => {
+    return () => {
+      return ( props === "+" ? (this.props.addCounter()) : (this.props.subtractCounter()) )
+    }
+  }
+
+  handleResetButton = () => {
+    return () => {
+      return this.props.resetCounter()
+    }
+  }
+
+    render (){
+      return (
+        <div className='center'>
+          <div>
+            <Screen total={this.props.total}/>
+          </div>
+          <div>
+            <Button sign='-' handleButtonClick={this.handleButtonClick("-")}/>
+            <Button sign='+' handleButtonClick={this.handleButtonClick("+")}/>
+          </div>
+          <div>
+            <Button sign='Reset' handleButtonClick={this.handleResetButton()}/>
+          </div>
+        </div>
+    )
+  }
 }
 
-export default App;
+const mapStateToProps = (state, ownProps) => {
+  return state
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addCounter: () => { dispatch (addCounter() )},
+    subtractCounter: () => { dispatch (subtractCounter() )},
+    resetCounter: () => { dispatch (resetCounter() )}
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)
